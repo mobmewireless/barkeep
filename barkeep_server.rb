@@ -1,17 +1,15 @@
 require "bundler/setup"
 require "pathological"
 
-require "bourbon"
 require "coffee-script"
 require "json"
 require "methodchain"
 require "nokogiri"
-require "open-uri"
 require "openid"
 require "openid/extensions/ax"
 require "openid/store/filesystem"
+require "open-uri"
 require "pinion"
-require "pinion/sinatra_helpers"
 require "redcarpet"
 require "redis"
 require "sass"
@@ -47,16 +45,10 @@ OPENID_PROVIDERS_ARRAY = OPENID_PROVIDERS.split(",")
 class BarkeepServer < Sinatra::Base
   attr_accessor :current_user
 
-  # Set up Pinion to manage static and compiled assets.
-  set :pinion, Pinion::Server.new("/assets")
-  configure do
-    pinion.convert :scss => :css
-    pinion.convert :coffee => :js
-    pinion.watch "public"
-    pinion.watch "#{Gem.loaded_specs["bourbon"].full_gem_path}/app/assets/stylesheets"
+  def initialize(pinion)
+    @pinion = pinion
+    super()
   end
-
-  helpers Pinion::SinatraHelpers
 
   # Pinion will handle all static routes
   disable :static
@@ -155,7 +147,7 @@ class BarkeepServer < Sinatra::Base
     end
   end
 
-  get("/favicon.ico") { redirect asset_url("favicon.ico") }
+  get("/favicon.ico") { redirect @pinion.asset_url("favicon.ico") }
 
   get("/") { redirect "/commits" }
 
@@ -383,13 +375,18 @@ class BarkeepServer < Sinatra::Base
     when OpenID::Consumer::SUCCESS
       ax_resp = OpenID::AX::FetchResponse.from_success_response(openid_response)
       email = ax_resp["http://axschema.org/contact/email"][0]
-      session[:email] = email
-      unless User.find(:email => email)
-        # If there are no admin users yet, make the first user to log in the first admin.
-        permission = User.find(:permission => "admin").nil? ? "admin" : "normal"
-        User.new(:email => email, :name => email, :permission => permission).save
-      end
-      redirect session[:login_started_url] || "/"
+      
+      if email =~ /mobme.in/ then
+      	session[:email] = email
+      	unless User.find(:email => email)
+        	# If there are no admin users yet, make the first user to log in the first admin.
+        	permission = User.find(:permission => "admin").nil? ? "admin" : "normal"
+        	User.new(:email => email, :name => email, :permission => permission).save
+      	end
+      	redirect session[:login_started_url] || "/"
+       else
+	"Domain not allowed for login. Use mobme.in username"
+       end
     end
   end
 

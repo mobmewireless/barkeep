@@ -8,9 +8,9 @@ require "bundler/setup"
 require "pathological"
 require "lib/script_environment"
 
-email = "joedemo@getbarkeep.com"
+email = "hosting@mobme.in"
 unless User.first(:email => email)
   puts "Creating demo user with email #{email}"
-  User.create(:name => "Joe Demo User", :email => email, :permission => "demo",
+  User.create(:name => "Mobme Admin User", :email => email, :permission => "demo",
       :saved_search_time_period => User::ONE_YEAR)
 end

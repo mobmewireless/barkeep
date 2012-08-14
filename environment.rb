@@ -1,8 +1,8 @@
 DB_HOST = "localhost"
 DB_PORT = 3306
-DB_NAME = "barkeep"
-DB_USER = "root"
-DB_PASSWORD = ""
+DB_NAME = "barkeep_db"
+DB_USER = "barkeep"
+DB_PASSWORD = "acc2bark3p"
 
 # These are the credentials of the Gmail account that you want to send mail as.
 # NOTE(philc): We may want to make configuration variables which generically support SMTP.
@@ -13,7 +13,7 @@ GMAIL_PASSWORD = ""
 REPOS_ROOT = "#{ENV["HOME"]}/barkeep_repos"
 
 # This hostname is used to construct links in the commit emails.
-BARKEEP_HOSTNAME = "localhost:8040"
+BARKEEP_HOSTNAME = "localhost:8080"
 
 REDIS_HOST = "localhost"
 REDIS_PORT = 6379
@@ -21,6 +21,7 @@ REDIS_PORT = 6379
 # A comma-separate list of OpenID provider URLs for signing in your users.
 # If you provide more than one, users will receive a UI allowing to pick which service to use to authenticate.
 # Besides Google, another popular OpenID endpoint is https://me.yahoo.com
+#OPENID_PROVIDERS = "https://www.google.com/accounts/o8/ud"
 OPENID_PROVIDERS = "https://www.google.com/accounts/o8/ud"
 
 # This is the read-only demo mode which is used in the Barkeep demo linked from getbarkeep.com.
